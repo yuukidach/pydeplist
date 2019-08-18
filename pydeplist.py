@@ -3,7 +3,7 @@ import os
 import logging
 import subprocess
 
-from distutils.core import run_setup
+from utils.setup_load import setup_load
 
 PACK_DIR = ""
 SETUP_FOLDER = ".setup_py_tmp"
@@ -37,7 +37,8 @@ def get_deps(setup_py):
         deps: Denpedencies list in `setup.py'
     '''
     try:
-        setup = run_setup(setup_py, stop_after="config")
+        g = {"__name__": "__main__"}
+        setup = setup_load(setup_py, script_args=None, stop_after="init", **g)
         logging.info(setup)
         deps = setup.install_requires
 
