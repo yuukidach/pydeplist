@@ -2,6 +2,7 @@ import sys
 import os
 import logging
 import subprocess
+import shutil
 
 from pydeplist.utils.setup_load import setup_load
 
@@ -137,6 +138,10 @@ def draw_dep_grah(dep_dict, node, depth):
             draw_dep_grah(dep_dict, pack, depth)
             
 
+def del_tmp_setup_folder():
+    shutil.rmtree(SETUP_FOLDER)
+
+
 def main():
     log_format = "[%(asctime)s] [%(levelname)8s]  %(message)s"
     level = logging.FATAL
@@ -150,6 +155,8 @@ def main():
 
     print("\n- setup")
     draw_dep_grah(dep_tree, "setup", 0)
+
+    del_tmp_setup_folder()
 
 
 if __name__ == "__main__":
