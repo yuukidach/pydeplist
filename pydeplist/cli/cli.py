@@ -8,6 +8,7 @@ def get_config(**kwargs):
 
 
 @click.command()
+@click.version_option()
 @click.option("--mode", "-m",
               default="release", 
               type=click.Choice(["debug", "release"]),
@@ -17,9 +18,11 @@ def get_config(**kwargs):
               help="Folder of the Python package which need to check dependencies.")
 @click.option("--user", "-u",
               default="",
+              prompt="User account",
               help="User name of GitHub account.")
 @click.option("--passwd",
-              default="",
+              default="", hide_input=True,
+              prompt="Password for GitHub account",
               help="Password for GitHub account.")
 def run(**kwargs):
     get_config(**kwargs)
