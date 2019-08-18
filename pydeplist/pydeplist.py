@@ -3,13 +3,12 @@ import os
 import logging
 import subprocess
 
-from utils.setup_load import setup_load
+from pydeplist.utils.setup_load import setup_load
 
-PACK_DIR = ""
 SETUP_FOLDER = ".setup_py_tmp"
-USER = ""
-PASSWD = ""
 TAB_SPACE = 4
+
+APP_CONFIG = {}
 
 all_setup_file = []
 dep_tree = {}
@@ -90,7 +89,7 @@ def get_raw_url(repo_url, ver):
 def download_setup_py(pack_name, url):
     os.makedirs(SETUP_FOLDER, exist_ok=True)
     fname = SETUP_FOLDER + "/" + pack_name + ".py"
-    user = USER + ":" + PASSWD
+    user = APP_CONFIG["user"] + ":" + APP_CONFIG["passwd"]
     # if file exisy, do not download again
     if os.path.isfile(fname):
         return
@@ -140,10 +139,14 @@ def draw_dep_grah(dep_dict, node, depth):
 
 def main():
     log_format = "[%(asctime)s] [%(levelname)8s]  %(message)s"
-    logging.basicConfig(level=logging.DEBUG, format=log_format)    
+    level = logging.FATAL
+    if APP_CONFIG["mode"] is "debug":
+        level = logging.DEBUG
+    logging.basicConfig(level=level, format=log_format)    
 
-    goto_pack_dir(PACK_DIR)
-    get_dep_tree(PACK_DIR, "setup")
+    goto_pack_dir(APP_CONFIG["dir"])
+    dep_tree["setup"] = []
+    get_dep_tree(APP_CONFIG["dir"], "setup")
 
     print("\n- setup")
     draw_dep_grah(dep_tree, "setup", 0)
