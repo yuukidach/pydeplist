@@ -21,8 +21,10 @@ def setup_load (script_name, script_args=None, stop_after="run", **kwargs):
             sys.argv[0] = script_name
             if script_args is not None:
                 sys.argv[1:] = script_args
-            with open(script_name, 'rb') as f:
-                exec(f.read(), g)
+            # with open(script_name, 'rb') as f:
+            f = open(script_name, 'rb')    
+            exec(f.read(), g)
+            f.close()
         finally:
             sys.argv = save_argv
             _setup_stop_after = None

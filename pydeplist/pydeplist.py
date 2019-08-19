@@ -4,7 +4,7 @@ import logging
 import subprocess
 import shutil
 
-from pydeplist.utils.setup_load import setup_load
+from pydeplist.utils.setup_parser import get_install_requires
 
 SETUP_FOLDER = ".setup_py_tmp"
 TAB_SPACE = 4
@@ -36,19 +36,17 @@ def get_deps(setup_py):
     # Return:
         deps: Denpedencies list in `setup.py'
     '''
-    try:
-        g = {"__name__": "__main__"}
-        setup = setup_load(setup_py, script_args=None, stop_after="init", **g)
-        logging.info(setup)
-        deps = setup.install_requires
+    # try:
+    deps = get_install_requires(setup_py)
+    logging.info(deps)
 
-        logging.debug(f"Dependencies in {setup_py}:")
-        for dep in deps:
-            logging.debug("    - "+dep)
+    logging.debug(f"Dependencies in {setup_py}:")
+    for dep in deps:
+        logging.debug("    - "+dep)
 
-        return deps
-    except:
-        return []
+    return deps
+    # except:
+    #     return []
 
 
 def is_git_dep(dep):
@@ -145,7 +143,7 @@ def del_tmp_setup_folder():
 def main():
     log_format = "[%(asctime)s] [%(levelname)8s]  %(message)s"
     level = logging.FATAL
-    if APP_CONFIG["mode"] is "debug":
+    if APP_CONFIG["mode"] == "debug":
         level = logging.DEBUG
     logging.basicConfig(level=level, format=log_format)    
 
@@ -156,7 +154,7 @@ def main():
     print("\n- setup")
     draw_dep_grah(dep_tree, "setup", 0)
 
-    del_tmp_setup_folder()
+    # del_tmp_setup_folder()
 
 
 if __name__ == "__main__":
