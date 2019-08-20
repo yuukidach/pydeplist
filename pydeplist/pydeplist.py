@@ -27,6 +27,29 @@ def get_setup_py(dir, name):
     return (f"{dir}/{name}.py")
 
 
+class SetUpFile():
+    def __init__(self, name, dir):
+        self.name = name
+        self.dir = '.'
+        self.path = './setup.py'
+        self.deps = []
+    
+    def get__path(self):
+        self.path = f"{self.dir}/{self.name}.py"
+        return self.path
+
+    def get_deps(self):
+        self.deps = get_install_requires(self.path)
+        logging.info(self.deps)
+
+        logging.debug(f"Dependencies in {self.path}:")
+        for dep in self.deps:
+            logging.debug("    - "+dep)
+
+        return self.deps 
+    
+
+
 def get_deps(setup_py):
     ''' Get dependecies list from `setup.py'
 
@@ -69,7 +92,7 @@ def get_git_dep_info(dep):
     '''
     info_piece = str(dep).split("@")
 
-    pack_name = info_piece[0]
+    pack_name = info_piece[0].strip()
     pack_ver = info_piece[-1].split("#")[0]
     git_url = info_piece[2]         # github.com/[Organizaiton]/[repo-path]/setup.py
 
@@ -154,7 +177,7 @@ def main():
     print("\n- setup")
     draw_dep_grah(dep_tree, "setup", 0)
 
-    # del_tmp_setup_folder()
+    del_tmp_setup_folder()
 
 
 if __name__ == "__main__":
